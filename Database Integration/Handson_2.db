@@ -1,0 +1,39 @@
+Task 2 : Verify Normalization
+===========================================================*/
+
+-- =========================================================
+-- 1NF (First Normal Form)
+-- =========================================================
+-- Every column stores only one value.
+-- No repeating groups or multiple values are stored in
+-- a single column.
+-- Example violation:
+-- phone_number = '9876543210,9876543211'
+-- This violates 1NF because two phone numbers are stored
+-- in one field.
+
+-- =========================================================
+-- 2NF (Second Normal Form)
+-- =========================================================
+-- Every non-key attribute depends completely on the
+-- primary key.
+-- In the enrollments table, enrollment_date and grade
+-- depend on the enrollment record.
+-- No partial dependency exists.
+
+-- =========================================================
+-- 3NF (Third Normal Form)
+-- =========================================================
+-- There are no transitive dependencies.
+-- Students store department_id instead of department_name.
+-- Department details are stored only once in the
+-- departments table.
+-- This removes redundancy and maintains consistency.
+
+-- Enrollments Table Analysis
+-- grade depends only on enrollment_id.
+-- enrollment_date depends only on enrollment_id.
+-- Neither depends on another non-key attribute.
+-- Therefore the table satisfies Third Normal Form.
+
+
