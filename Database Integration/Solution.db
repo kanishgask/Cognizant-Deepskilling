@@ -1,0 +1,176 @@
+
+
+CREATE TABLE departments (
+    department_id INT AUTO_INCREMENT PRIMARY KEY,
+    dept_name VARCHAR(100) NOT NULL,
+    hod_name VARCHAR(100),
+    budget DECIMAL(12,2)
+);
+
+
+
+CREATE TABLE students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    date_of_birth DATE,
+    department_id INT,
+    enrollment_year INT,
+
+    FOREIGN KEY (department_id)
+    REFERENCES departments(department_id)
+);
+
+
+-- 3. Courses Table
+
+CREATE TABLE courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(150) NOT NULL,
+    course_code VARCHAR(20) UNIQUE,
+    credits INT,
+    department_id INT,
+
+    FOREIGN KEY (department_id)
+    REFERENCES departments(department_id)
+);
+
+
+-- 4. Enrollments Table
+
+CREATE TABLE enrollments (
+    enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    enrollment_date DATE,
+    grade CHAR(2),
+
+    FOREIGN KEY (student_id)
+    REFERENCES students(student_id),
+
+    FOREIGN KEY (course_id)
+    REFERENCES courses(course_id)
+);
+
+
+-- 5. Professors Table
+
+CREATE TABLE professors (
+    professor_id INT AUTO_INCREMENT PRIMARY KEY,
+    prof_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    department_id INT,
+    salary DECIMAL(10,2),
+
+    FOREIGN KEY (department_id)
+    REFERENCES departments(department_id)
+);
+
+
+
+/*===========================================================
+Task 2 : Verify Normalization
+===========================================================*/
+
+-- =========================================================
+-- 1NF (First Normal Form)
+-- =========================================================
+-- Every column stores only one value.
+-- No repeating groups or multiple values are stored in
+-- a single column.
+-- Example violation:
+-- phone_number = '9876543210,9876543211'
+-- This violates 1NF because two phone numbers are stored
+-- in one field.
+
+-- =========================================================
+-- 2NF (Second Normal Form)
+-- =========================================================
+-- Every non-key attribute depends completely on the
+-- primary key.
+-- In the enrollments table, enrollment_date and grade
+-- depend on the enrollment record.
+-- No partial dependency exists.
+
+-- =========================================================
+-- 3NF (Third Normal Form)
+-- =========================================================
+-- There are no transitive dependencies.
+-- Students store department_id instead of department_name.
+-- Department details are stored only once in the
+-- departments table.
+-- This removes redundancy and maintains consistency.
+
+-- Enrollments Table Analysis
+-- grade depends only on enrollment_id.
+-- enrollment_date depends only on enrollment_id.
+-- Neither depends on another non-key attribute.
+-- Therefore the table satisfies Third Normal Form.
+
+
+
+/*===========================================================
+Task 3 : Alter Existing Schema
+===========================================================*/
+
+
+-- Step 10
+-- Add phone_number column
+
+ALTER TABLE students
+ADD phone_number VARCHAR(15);
+
+
+
+-- Step 11
+-- Add max_seats column
+
+ALTER TABLE courses
+ADD max_seats INT DEFAULT 60;
+
+
+
+-- Step 12
+-- Add CHECK constraint
+
+ALTER TABLE enrollments
+ADD CONSTRAINT chk_grade
+CHECK (
+grade IN ('A','B','C','D','F')
+OR grade IS NULL
+);
+
+
+
+-- Step 13
+-- Rename hod_name column
+
+ALTER TABLE departments
+RENAME COLUMN hod_name TO head_of_dept;
+
+
+
+-- Step 14
+-- Drop phone_number column
+
+ALTER TABLE students
+DROP COLUMN phone_number;
+
+
+
+/*===========================================================
+Verification Commands
+===========================================================*/
+
+SHOW TABLES;
+
+DESC departments;
+
+DESC students;
+
+DESC courses;
+
+DESC enrollments;
+
+DESC professors;
